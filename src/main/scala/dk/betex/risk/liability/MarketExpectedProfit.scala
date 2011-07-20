@@ -1,4 +1,4 @@
-package dk.betting.risk.liability
+package dk.betex.risk.liability
 
 import scala.collection._
 

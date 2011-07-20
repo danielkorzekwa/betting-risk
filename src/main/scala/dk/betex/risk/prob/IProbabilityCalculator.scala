@@ -1,4 +1,4 @@
-package dk.betting.risk.prob
+package dk.betex.risk.prob
 
 import scala.collection._
 
