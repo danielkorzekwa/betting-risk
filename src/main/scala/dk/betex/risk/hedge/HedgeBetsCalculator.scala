@@ -29,6 +29,7 @@ trait HedgeBetsCalculator {
 
 object HedgeBetsCalculator extends HedgeBetsCalculator {
 
+  /**hedge bet = (ifWin-ifLose)/price, it could also calculated as (marketExpected-ifWin/(price-1).*/
   def calculateHedgeBet(bets: List[IBet], marketPrices: Map[Long, Tuple2[Double, Double]], hedgeRunnerId: Long): Option[HedgeBet] = {
     if (bets.isEmpty) None
     require(bets.map(_.marketId).distinct.size == 1, "All bets must be on the same market")
@@ -40,18 +41,20 @@ object HedgeBetsCalculator extends HedgeBetsCalculator {
     val ifLose = riskReport.ifLose(hedgeRunnerId)
     val bestPrices = marketPrices(hedgeRunnerId)
 
-    val hedgeBet = if (ifWin > ifLose && !bestPrices._2.isNaN) {
+    val ifWinIfLoseDelta = ifWin - ifLose
+    val hedgeBet = if (ifWinIfLoseDelta > 0 && !bestPrices._2.isNaN) {
       val betPrice = bestPrices._2
-      val betSize = (ifWin - ifLose) / betPrice
+      val betSize = Math.abs(ifWinIfLoseDelta) / betPrice
       Option(HedgeBet(betSize, betPrice, LAY, marketId, hedgeRunnerId))
 
-    } else if (ifLose > ifWin && !bestPrices._1.isNaN) {
+    } else if (ifWinIfLoseDelta < 0 && !bestPrices._1.isNaN) {
       val betPrice = bestPrices._1
-      val betSize = (ifLose - ifWin) / betPrice
+      val betSize = Math.abs(ifWinIfLoseDelta) / betPrice
       Option(HedgeBet(betSize, betPrice, BACK, marketId, hedgeRunnerId))
     } else None
 
-    hedgeBet
+    /**Minimum bet size is 1.*/
+    if(hedgeBet.isDefined && hedgeBet.get.betSize >= 1) hedgeBet else None
   }
 
 }
