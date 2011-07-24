@@ -31,9 +31,10 @@ object HedgeBetsCalculator extends HedgeBetsCalculator {
 
   /**hedge bet = (ifWin-ifLose)/price, it could also calculated as (marketExpected-ifWin/(price-1).*/
   def calculateHedgeBet(bets: List[IBet], marketPrices: Map[Long, Tuple2[Double, Double]], hedgeRunnerId: Long): Option[HedgeBet] = {
-    if (bets.isEmpty) None
+    if (bets.isEmpty) return None
     require(bets.map(_.marketId).distinct.size == 1, "All bets must be on the same market")
-
+    require(marketPrices.contains(hedgeRunnerId),"Runner not found:" + hedgeRunnerId)
+    
     val marketId = bets.head.marketId
     val probs = ProbabilityCalculator.calculate(marketPrices, 1)
     val riskReport = ExpectedProfitCalculator.calculate(bets, probs, 0, 0)
