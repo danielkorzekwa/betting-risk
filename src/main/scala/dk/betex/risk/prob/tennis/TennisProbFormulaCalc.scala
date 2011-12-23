@@ -44,8 +44,8 @@ object TennisProbFormulaCalc extends TennisProbCalc {
   def setProb(pointProbOnServe: Double, pointProbOnReceive: Double) = {
     val p = pointProbOnServe
     val q = pointProbOnReceive
-    val G = gameProb(_)
-    val TB = tiebreakProb(_, _)
+    val G = gameProb _
+    val TB = tiebreakProb _
 
     def product(b: Array[Int]): Double = b(0) * pow(G(p), b(1)) * pow(1 - G(p), b(2)) * pow(G(q), b(3)) * pow(1 - G(q), b(4)) *
       pow(G(p) * G(q) + (G(p) * (1 - G(q)) + (1 - G(p)) * G(q)) * TB(p, q), b(5))
@@ -61,7 +61,11 @@ object TennisProbFormulaCalc extends TennisProbCalc {
    * @param pointProbOnReceive Probability of winning a point when receiving serve
    */
   def match3SetProb(pointProbOnServe: Double, pointProbOnReceive: Double): Double = {
-    throw new UnsupportedOperationException("Not implemented yet.")
+    val p = pointProbOnServe
+    val q = pointProbOnReceive
+    val S = setProb _
+    val prob = pow(S(p, q), 2) * (1 + 2 * (1 - S(p, q)))
+    prob
   }
 
   /**
@@ -71,7 +75,11 @@ object TennisProbFormulaCalc extends TennisProbCalc {
    * @param pointProbOnReceive Probability of winning a point when receiving serve
    */
   def match5SetProb(pointProbOnServe: Double, pointProbOnReceive: Double): Double = {
-    throw new UnsupportedOperationException("Not implemented yet.")
+    val p = pointProbOnServe
+    val q = pointProbOnReceive
+    val S = setProb _
+    val prob = pow(S(p, q), 3) * (1 + 3 * (1 - S(p, q)) + 6 * pow((1 - S(p, q)), 2))
+    prob
   }
 
   val A = Array(
