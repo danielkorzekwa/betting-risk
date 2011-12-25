@@ -5,6 +5,17 @@ import Assert._
 import dk.betex.risk.prob.tennis.TennisProbFormulaCalc$
 
 class TennisProbFormulaCalcTest {
+  /**Tests for pointAvgProb*/
+  @Test def pointAvgProb {
+    assertEquals(0.71080, TennisProbFormulaCalc.pointAvgProb(0.64, 0.79, 0.57), 0.0001)
+    assertEquals(0.57, TennisProbFormulaCalc.pointAvgProb(0.0, 0.79, 0.57), 0.0)
+    assertEquals(0.79, TennisProbFormulaCalc.pointAvgProb(1, 0.79, 0.57), 0.0)
+  }
+
+  /**Tests for pointProb.*/
+  @Test def pointProb {
+    assertEquals(0.735039, TennisProbFormulaCalc.pointProb(0.7108, 0.3426, 0.36684), 0.00001)
+  }
 
   /**Tests for gameProb, tiebreakProb, setProb, matchProb*/
   @Test def tiebreak_probability_serve_receive_0_5_and_0_5 {
@@ -150,7 +161,7 @@ class TennisProbFormulaCalcTest {
   }
 
   @Test def Roger_Federer_vs_Milos_Raonic_23_12_2011 {
-    assertEquals(1.23333, TennisProbFormulaCalc.match3SetProb(0.7354, 0.34), 0.0001)
+    assertEquals(0.810811, TennisProbFormulaCalc.match3SetProb(0.7354, 0.34), 0.0001)
   }
 
 }
